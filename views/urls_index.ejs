@@ -1,1 +1,16 @@
-<p>urls_index.ejs <%= urls %></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>TinyApp</title>
+</head>
+<body>
+  <h2> List of URLs </h2>
+  <ul>
+  <% for (key in urls) { %>
+    <li><strong><%= urls[key] %></strong> is shortened to <b><%= key %></b></li>
+  <% } %>
+  </ul>
+A list or table of the URLs and their shortened forms.
+A link for shortening a new URL (this will be a dead link for now, that is it doesn't need to go anywhere since you'll be building its functionality later).
+</body>
+</html>
