@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <% include partials/_head %>
   <title>TinyApp</title>
 </head>
-<body>
+<body class="container">
+  <% include partials/_header %>
   <h2> List of URLs </h2>
   <ul>
   <% for (key in urls) { %>
