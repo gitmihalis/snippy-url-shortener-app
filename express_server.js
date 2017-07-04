@@ -25,6 +25,13 @@ app.get('/html', (req, res) => {
   res.end("<html><body>Can you dig it, <b> doOoDe?</b></body></html>")
 })
 
+app.get('/urls/:id', (req, res) => {
+  const url = { 
+    short: req.params.id,
+    long: urlDatabase[req.params.id] };
+  res.render('urls_show', { url }  );
+})
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
