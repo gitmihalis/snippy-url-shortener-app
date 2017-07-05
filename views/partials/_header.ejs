@@ -7,7 +7,14 @@
     </div>
     <button type="submit" class="btn btn-default">Login</button>
   </form>
-  <% } %>
+  <% } else { %>
+  <form class="form-inline" action="/logout" method="POST">
+    <div class="form-group">
+      <input type="text" name="username" value="<%= templateVars.username %>" class="form-control" readonly>
+    </div>
+    <button type="submit" class="btn btn-default">Logout</button>
+</form>
+<% } %>
   <div class="jumbotron">
     <h1> Tiny App </h1>
     <h2>Hello, <%= templateVars.username ? templateVars.username : 'Guest' %></h2>

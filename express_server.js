@@ -85,6 +85,11 @@ app.post('/login', (req, res) => {
   res.cookie('username', username);
   res.redirect('/urls');
 // set the cookie parameter called username to the value submitted in the request body via the form
+});
+
+app.post('/logout', (req, res) => {
+  res.clearCookie('username');
+  res.redirect('/urls');
 })
 
 
