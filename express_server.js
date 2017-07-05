@@ -1,6 +1,6 @@
 const express = require("express");
-const app = express();
 const bodyParser = require("body-parser");
+const cookieParser = require('cookie-parser');
 const PORT = 8080;
 
 function generateRandomString() {
@@ -18,10 +18,12 @@ var urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+
+const app = express(); // instantiate expressjs
+
 app.set('view engine', 'ejs');
-
-app.use(bodyParser.urlencoded( {extended: true} ));
-
+app.use(bodyParser.urlencoded( {extended: true} )); // parse application/x-www-form-urlencoded
+app.use(cookieParser());
 app.get("/", (req, res) => {
   res.end("Hello!");
 });
@@ -65,6 +67,10 @@ app.post('/urls/:id', (req, res) => {
   urlDatabase[url] = req.body.longURL;
   console.log(urlDatabase);
   res.redirect('/urls');
+});
+
+app.get('/login', (req, res) => {
+  res.send('OK')
 })
 
 
