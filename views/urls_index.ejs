@@ -7,9 +7,12 @@
 <body class="container">
   <% include partials/_header %>
   <h2> List of URLs </h2>
-  <ul>
+  <ul class="list-group">
   <% for (key in urls) { %>
-    <li><strong><%= urls[key] %></strong> is shortened to <b><%= key %></b></li>
+    <li class="list-group-item">
+      <span><%= urls[key] %>  -->  <b><%= key %></b></span> 
+      <a class="btn btn-sm  btn-danger">Delete</a>
+    </li>
   <% } %>
   </ul>
 </body>
