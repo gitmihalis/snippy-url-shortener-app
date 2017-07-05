@@ -10,8 +10,10 @@
   <ul class="list-group">
   <% for (key in urls) { %>
     <li class="list-group-item">
-      <span><%= urls[key] %>  -->  <b><%= key %></b></span> 
-      <a class="btn btn-sm  btn-danger">Delete</a>
+      <span><%= urls[key] %>  -->  <b><%= key %></b></span>
+      <form method="POST" action="/urls/<%= key %>/delete"> 
+        <button onclick=submit"" class="btn btn-sm  btn-danger">Delete</button>
+      </form>
     </li>
   <% } %>
   </ul>
