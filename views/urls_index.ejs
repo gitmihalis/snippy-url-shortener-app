@@ -10,7 +10,7 @@
   <ul class="list-group">
   <% for (key in urls) { %>
     <li class="list-group-item clearfix">
-      <%= urls[key] %>  -->  <b><%= key %></b>
+      <a href="<%= urls[key] %>"><%= urls[key] %></a>  ⟶  <%= key %>
       <div class="btn-group pull-right">
         <form class="form-inline" method="POST" action="/urls/<%= key %>/delete"> 
         <a class="btn btn-default" href="/urls/<%= key %>">Edit</a>
