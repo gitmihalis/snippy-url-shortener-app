@@ -12,7 +12,7 @@ function generateRandomString() {
     return randomString;
 }
 
-var urlDatabase = {
+let urlDatabase = {
   "abcdef": "http://www.instagram.com",
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
@@ -29,12 +29,15 @@ app.get("/", (req, res) => {
 });
 
 app.get('/urls', (req, res) => {
-  res.render('urls_index', { urls: urlDatabase } );
+  let templateVars = {
+    username: req.cookies["username"]
+  };
+  res.render('urls_index', { urls: urlDatabase, templateVars: templateVars } );
 });
 
 // get new url form
 app.get('/urls/new', (req, res) => {
-  res.render('urls_new');
+  res.render('urls_new', templateVars);
 });
 
 // show url
@@ -42,8 +45,11 @@ app.get('/urls/:id', (req, res) => {
   const url = {
     short: req.params.id,
     long: urlDatabase[req.params.id] };
+  let templateVars = {
+    username: req.cookies["username"]
+  };
   if ( urlDatabase[req.params.id] )
-  res.render('urls_show', { url }  );
+  res.render('urls_show', { url, templateVars }  );
 });
 
 // handle shortURL requests:
@@ -71,6 +77,14 @@ app.post('/urls/:id', (req, res) => {
 
 app.get('/login', (req, res) => {
   res.send('OK')
+});
+
+// handle the login form submission
+app.post('/login', (req, res) => {
+  const username = req.body.username;
+  res.cookie('username', username);
+  res.redirect('/urls');
+// set the cookie parameter called username to the value submitted in the request body via the form
 })
 
 
