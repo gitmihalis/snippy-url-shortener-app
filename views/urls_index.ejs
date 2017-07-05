@@ -9,11 +9,14 @@
   <h2> List of URLs </h2>
   <ul class="list-group">
   <% for (key in urls) { %>
-    <li class="list-group-item">
-      <span><%= urls[key] %>  -->  <b><%= key %></b></span>
-      <form method="POST" action="/urls/<%= key %>/delete"> 
-        <button onclick=submit"" class="btn btn-sm  btn-danger">Delete</button>
-      </form>
+    <li class="list-group-item clearfix">
+      <%= urls[key] %>  -->  <b><%= key %></b>
+      <div class="btn-group pull-right">
+        <form class="form-inline" method="POST" action="/urls/<%= key %>/delete"> 
+        <a class="btn btn-default" href="/urls/<%= key %>">Edit</a>
+          <button onclick="submit" class="btn btn-danger">Delete</button>
+        </form>
+      </div>
     </li>
   <% } %>
   </ul>

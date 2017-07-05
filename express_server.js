@@ -59,6 +59,14 @@ app.post("/urls", (req, res) => {
    // Respond with 'Ok' (we will replace this)
 });
 
+app.post('/urls/:id', (req, res) => {
+  // update the resouce
+  let url = req.params.id;
+  urlDatabase[url] = req.body.longURL;
+  console.log(urlDatabase);
+  res.redirect('/urls');
+})
+
 
 app.post('/urls/:id/delete', (req, res) => {
   // delete the resouce
