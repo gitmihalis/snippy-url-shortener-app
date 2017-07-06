@@ -91,8 +91,15 @@ app.post('/register', (req, res) => {
     email: req.body['email'],
     password: req.body['password']
   }
-  console.log(usersDB[id]);
-  res.render('register');
+  if ( usersDB.hasOwnProperty(id) ) console.log("saved: ", usersDB[id]);
+  //Set a user_id cookie containing the user's (newly generated) ID.
+  res.cookie('user_id', id);
+  // Redirect the user back to the /urls page.
+  res.redirect('/urls');
+})
+
+app.get('/register', (req, res) => {
+  res.render('register')
 })
 
 app.post('/logout', (req, res) => {
