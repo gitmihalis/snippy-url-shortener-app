@@ -1,6 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
+const usersDB = require('./mock-data').users;
+const urlDatabase = require('./mock-data').urls;
 const PORT = 8080;
 
 function generateRandomString() {
@@ -11,12 +13,6 @@ function generateRandomString() {
     }
     return randomString;
 }
-
-let urlDatabase = {
-  "abcdef": "http://www.instagram.com",
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
-};
 
 
 const app = express(); // instantiate expressjs
@@ -86,6 +82,18 @@ app.post('/login', (req, res) => {
   res.redirect('/urls');
 // set the cookie parameter called username to the value submitted in the request body via the form
 });
+
+app.post('/register', (req, res) => {
+  const id = generateRandomString();
+  // create a new object in usersDB
+  usersDB[id] = {
+    id: id,
+    email: req.body['email'],
+    password: req.body['password']
+  }
+  console.log(usersDB[id]);
+  res.render('register');
+})
 
 app.post('/logout', (req, res) => {
   res.clearCookie('username');
