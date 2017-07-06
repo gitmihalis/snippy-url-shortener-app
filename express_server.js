@@ -21,7 +21,7 @@ function findUserById(id) {
     return false;
   }
 }
-// return the user object by email address...
+
 function findUserByEmail(email) {
   for ( user in userDatabase) {
       console.log(userDatabase[user])
@@ -34,13 +34,12 @@ function authorize(user, password) {
   if ( user.password === password) return true;
   return false;
 }
-// console.log('findUserbyEmail: ', findUserByEmail('mihalis@mail.com'))
-// console.log('findUserbyEmail: ', findUserByEmail('fff@mail.com'))
 
 const app = express(); // instantiate expressjs
 
 app.set('view engine', 'ejs');
-app.use(bodyParser.urlencoded( {extended: true} )); // parse application/x-www-form-urlencoded
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded( {extended: true} )); 
 app.use(cookieParser());
 
 app.get("/", (req, res) => {
@@ -48,7 +47,7 @@ app.get("/", (req, res) => {
 });
 
 app.get('/urls', (req, res) => {
-  console.log(req.cookies)
+  console.log('cookies :', req.cookies)
     res.render('urls_index', { urls: urlDatabase, userID: req.cookies.user_id } );
 });
 
@@ -62,9 +61,9 @@ app.get('/urls/:id', (req, res) => {
   const url = {
     short: req.params.id,
     long: urlDatabase[req.params.id] };
-  const user = findUserById(req.cookies['user_id'])
+  // const user = findUserById(req.cookies['user_id'])
   if ( urlDatabase[req.params.id] )
-  res.render('urls_show', { url, user }  );
+  res.render('urls_show', { url, userID: req.cookies.user_id }  );
 });
 
 // handle shortURL requests:
@@ -77,7 +76,7 @@ app.post("/urls", (req, res) => {
   // console.log(` req.body.longURL: ${req.body.longURL}`);  // debug statement to see POST parameters
   let shortURL = generateRandomString();
   urlDatabase[shortURL] = req.body.longURL;
-  console.log(urlDatabase);
+  console.log('post to urlDatabase: ', urlDatabase);
   res.send("Ok");        
    // Respond with 'Ok' (we will replace this)
 });
@@ -86,7 +85,7 @@ app.post('/urls/:id', (req, res) => {
   // update the resouce
   let url = req.params.id;
   urlDatabase[url] = req.body.longURL;
-  console.log(urlDatabase);
+  console.log('put to urlDatabase: ', urlDatabase);
   res.redirect('/urls');
 });
 
@@ -99,8 +98,8 @@ app.post('/login', (req, res) => {
   const email = req.body.email;
   const pwd = req.body.password;
   const currentUser = findUserByEmail(email);
-  console.log('currentUser is: ', currentUser)
   if ( currentUser && authorize(currentUser, pwd ) ) {
+    console.log('found user: ', currentUser)
     res.cookie('user_id', currentUser.id)
     res.redirect('/urls');
   } else {
@@ -121,7 +120,7 @@ app.post('/register', (req, res) => {
     console.log("saved: ", userDatabase[id]);
     res.cookie('user_id', id);
     res.redirect('/urls');
-  } else { // If the e-mail or password are empty strings, send back a response with the 400 status code.
+  } else { // If the e-mail or password are empty strings...
     res.sendStatus(400);
   }
 })
@@ -141,7 +140,6 @@ app.post('/urls/:id/delete', (req, res) => {
   let id = req.params.id;
   delete urlDatabase[id];
   console.log(urlDatabase)
-  // redirect user to urls_index
   res.redirect('/urls');
 });
 
