@@ -48,15 +48,8 @@ app.get("/", (req, res) => {
 });
 
 app.get('/urls', (req, res) => {
-  const currentUser = findUserById( req.cookies["user_id"] )
-  console.log(currentUser);
-  if (currentUser) {
-    console.log('has current user')
-    res.render('urls_index', { urls: urlDatabase, user: currentUser } );
-  } else {
-    console.log('no current user')
-    res.render('urls_index', { urls: urlDatabase, user: {} } );
-  }
+  console.log(req.cookies)
+    res.render('urls_index', { urls: urlDatabase, userID: req.cookies.user_id } );
 });
 
 // get new url form
@@ -99,7 +92,7 @@ app.post('/urls/:id', (req, res) => {
 
 app.get('/login', (req, res) => {
   // check cookie
-  res.render('login', { user: null });
+  res.render('login', { userID: null });
 })
 // handle the login form submission
 app.post('/login', (req, res) => {
@@ -109,7 +102,7 @@ app.post('/login', (req, res) => {
   console.log('currentUser is: ', currentUser)
   if ( currentUser && authorize(currentUser, pwd ) ) {
     res.cookie('user_id', currentUser.id)
-    res.redirect('/');
+    res.redirect('/urls');
   } else {
     res.sendStatus(403);
   }
