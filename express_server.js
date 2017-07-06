@@ -35,6 +35,18 @@ function authorize(user, password) {
   return false;
 }
 
+function urlsForUser(id) {
+  //  return subset of URL database that belongs to the user with ID
+  const urls = {};
+  for ( u in urlDatabase) {
+    console.log(urlDatabase[u]);
+    if ( urlDatabase[u].userID == id) {
+      urls[u] = urlDatabase[u];
+    }
+  }
+  return urls;
+}
+
 const app = express(); // instantiate expressjs
 
 app.set('view engine', 'ejs');
@@ -47,8 +59,9 @@ app.get("/", (req, res) => {
 });
 
 app.get('/urls', (req, res) => {
-  console.log('cookies :', req.cookies)
-    res.render('urls_index', { urls: urlDatabase, userID: req.cookies.user_id } );
+  let urls = urlsForUser( req.cookies.user_id );
+  console.log('#urlsForUser : ', urls);
+  res.render('urls_index', { urls, userID: req.cookies.user_id } );
 });
 
 // get new url form
@@ -90,8 +103,13 @@ app.post("/urls", (req, res) => {
 
 app.post('/urls/:id', (req, res) => {
   // update the resouce
-  let url = req.params.id;
-  urlDatabase[url].long = req.body.longURL;
+  // only if userID == req.cookies
+  let urlID = req.params.id;
+  if ( req.cookies.user_id !== urlDatabase[urlID].userID ) {
+    res.sendStatus(403);
+    return;
+  }
+  urlDatabase[urlID].long = req.body.longURL;
   console.log('put to urlDatabase: ', urlDatabase);
   res.redirect('/urls');
 });
