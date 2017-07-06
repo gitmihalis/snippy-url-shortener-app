@@ -29,6 +29,11 @@ function findUserByEmail(email) {
   }
   return false;
 }
+
+function authorize(user, password) {
+  if ( user.password === password) return true;
+  return false;
+}
 // console.log('findUserbyEmail: ', findUserByEmail('mihalis@mail.com'))
 // console.log('findUserbyEmail: ', findUserByEmail('fff@mail.com'))
 
@@ -95,9 +100,10 @@ app.get('/login', (req, res) => {
 // handle the login form submission
 app.post('/login', (req, res) => {
   const email = req.body.email;
+  const pwd = req.body.password;
   const currentUser = findUserByEmail(email);
   console.log('currentUser is: ', currentUser)
-  if ( currentUser ) {
+  if ( currentUser && authorize(currentUser, pwd ) ) {
     res.cookie('user_id', currentUser.id)
     res.redirect('/');
   } else {
