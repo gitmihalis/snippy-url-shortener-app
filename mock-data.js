@@ -17,8 +17,9 @@ const users = {
 }
 
 const urls = {
-  "abcdef": "http://www.instagram.com",
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "abcdef": { long: "http://www.instagram.com", userID: "abcdef" },
+  "b2xVn2": { long: "http://www.lighthouselabs.ca", userID: "b2xVn2" },
+  "9sm5xK": { long: "http://www.google.com", userID: "9sm5xK" }
 };
+
 module.exports = { urls, users};

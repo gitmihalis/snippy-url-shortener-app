@@ -9,12 +9,12 @@
   <div class="container">
       <h2> List of URLs </h2>
       <ul class="list-group">
-      <% for (key in urls) { %>
+      <% for (url in urls) { %>
         <li class="list-group-item clearfix">
-          <a href="<%= urls[key] %>"><%= urls[key] %></a>  ⟶  <%= key %>
+          <a href="<%= urls[url].long %>"><%= urls[url].long %></a>  ⟶  <%= url %>
           <div class="btn-group pull-right">
-            <form class="form-inline" method="POST" action="/urls/<%= key %>/delete"> 
-            <a class="btn btn-default" href="/urls/<%= key %>">Edit</a>
+            <form class="form-inline" method="POST" action="/urls/<%= url %>/delete"> 
+            <a class="btn btn-default" href="/urls/<%= url %>">Edit</a>
               <button onclick="submit" class="btn btn-danger">Delete</button>
             </form>
           </div>

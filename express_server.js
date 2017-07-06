@@ -67,22 +67,22 @@ app.get('/urls/new', (req, res) => {
 app.get('/urls/:id', (req, res) => {
   const url = {
     short: req.params.id,
-    long: urlDatabase[req.params.id] };
-  // const user = findUserById(req.cookies['user_id'])
+    long: urlDatabase[req.params.id].long 
+  };
   if ( urlDatabase[req.params.id] )
   res.render('urls_show', { url, userID: req.cookies.user_id }  );
 });
 
 // handle shortURL requests:
 app.get("/u/:shortURL", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL];
+  const longURL = urlDatabase[req.params.shortURL].long;
   res.redirect(longURL);
 });
 
 app.post("/urls", (req, res) => {
   // console.log(` req.body.longURL: ${req.body.longURL}`);  // debug statement to see POST parameters
   let shortURL = generateRandomString();
-  urlDatabase[shortURL] = req.body.longURL;
+  urlDatabase[shortURL].long = req.body.longURL;
   console.log('post to urlDatabase: ', urlDatabase);
   res.send("Ok");        
    // Respond with 'Ok' (we will replace this)
@@ -91,7 +91,7 @@ app.post("/urls", (req, res) => {
 app.post('/urls/:id', (req, res) => {
   // update the resouce
   let url = req.params.id;
-  urlDatabase[url] = req.body.longURL;
+  urlDatabase[url].long = req.body.longURL;
   console.log('put to urlDatabase: ', urlDatabase);
   res.redirect('/urls');
 });
