@@ -4,21 +4,23 @@
   <% include partials/_head %>
   <title>TinyApp</title>
 </head>
-<body class="container">
+<body class>
   <% include partials/_header %>
-  <h2> List of URLs </h2>
-  <ul class="list-group">
-  <% for (key in urls) { %>
-    <li class="list-group-item clearfix">
-      <a href="<%= urls[key] %>"><%= urls[key] %></a>  ⟶  <%= key %>
-      <div class="btn-group pull-right">
-        <form class="form-inline" method="POST" action="/urls/<%= key %>/delete"> 
-        <a class="btn btn-default" href="/urls/<%= key %>">Edit</a>
-          <button onclick="submit" class="btn btn-danger">Delete</button>
-        </form>
-      </div>
-    </li>
-  <% } %>
-  </ul>
+  <div class="container">
+      <h2> List of URLs </h2>
+      <ul class="list-group">
+      <% for (key in urls) { %>
+        <li class="list-group-item clearfix">
+          <a href="<%= urls[key] %>"><%= urls[key] %></a>  ⟶  <%= key %>
+          <div class="btn-group pull-right">
+            <form class="form-inline" method="POST" action="/urls/<%= key %>/delete"> 
+            <a class="btn btn-default" href="/urls/<%= key %>">Edit</a>
+              <button onclick="submit" class="btn btn-danger">Delete</button>
+            </form>
+          </div>
+        </li>
+      <% } %>
+      </ul>
+  </div>
 </body>
 </html>

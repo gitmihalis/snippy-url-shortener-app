@@ -21,6 +21,16 @@ function findUser(id) {
     return false;
   }
 }
+// return the user object by email address...
+function findUserByEmail(email) {
+  for ( user in userDatabase) {
+      console.log(userDatabase[user])
+    if (userDatabase[user].email === email) return userDatabase[user];
+  }
+  return false;
+}
+// console.log('findUserbyEmail: ', findUserByEmail('mihalis@mail.com'))
+// console.log('findUserbyEmail: ', findUserByEmail('fff@mail.com'))
 
 const app = express(); // instantiate expressjs
 
@@ -37,7 +47,7 @@ app.get('/urls', (req, res) => {
   if (user) {
     res.render('urls_index', { urls: urlDatabase, user } );
   } else {
-    res.render('register')
+    res.render('urls_index', { urls: urlDatabase } );
   }
 });
 
@@ -84,10 +94,15 @@ app.get('/login', (req, res) => {
 })
 // handle the login form submission
 app.post('/login', (req, res) => {
-  const username = req.body.username;
-  res.cookie('username', username);
-  res.redirect('/urls');
-// set the cookie parameter called username to the value submitted in the request body via the form
+  const email = req.body.email;
+  const currentUser = findUserByEmail(email);
+  console.log('currentUser is: ', currentUser)
+  if ( currentUser ) {
+    res.cookie('user_id', currentUser.id)
+    res.redirect('/');
+  } else {
+    res.sendStatus(403);
+  }
 });
 
 app.post('/register', (req, res) => {
