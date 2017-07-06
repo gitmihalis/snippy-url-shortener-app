@@ -53,7 +53,14 @@ app.get('/urls', (req, res) => {
 
 // get new url form
 app.get('/urls/new', (req, res) => {
-  res.render('urls_new');
+  // if not current user, redirext to LOGIN PAGE
+  const userID = findUserById(req.cookies.user_id);
+  console.log('id:', userID);
+  if (userID) {
+    res.render('urls_new', { userID: req.cookies.user_id } );
+  } else {
+    res.redirect('/login');
+  }
 });
 
 // show url
