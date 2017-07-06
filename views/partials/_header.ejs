@@ -1,7 +1,11 @@
 <div class="container">
   <div class="jumbotron">
     <h1>Tiny App</h1> 
-    <% include _signup_links %>
+    <% if (user) { %>
+      <a class="btn btn-danger" href="/logout">Logout</a>
+    <% } else { %>
+      <% include _signup_links %>
+    <% } %>
     <p>Tiny App is the most popular URL link shortener in the entire LHL community.</p> 
   </div>
 </div>

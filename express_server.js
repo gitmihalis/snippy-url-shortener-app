@@ -14,7 +14,7 @@ function generateRandomString() {
     return randomString;
 }
 
-function findUser(id) {
+function findUserById(id) {
   if (userDatabase[id]) {
     return userDatabase[id]
   } else {
@@ -42,17 +42,20 @@ const app = express(); // instantiate expressjs
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded( {extended: true} )); // parse application/x-www-form-urlencoded
 app.use(cookieParser());
+
 app.get("/", (req, res) => {
-  res.end("Hello!");
+  res.send('<h1>Welcome to TinyApp!</h1>')
 });
 
 app.get('/urls', (req, res) => {
-  console.log(req.cookies)
-  const user = findUser( req.cookies["user_id"] )
-  if (user) {
-    res.render('urls_index', { urls: urlDatabase, user } );
+  const currentUser = findUserById( req.cookies["user_id"] )
+  console.log(currentUser);
+  if (currentUser) {
+    console.log('has current user')
+    res.render('urls_index', { urls: urlDatabase, user: currentUser } );
   } else {
-    res.render('urls_index', { urls: urlDatabase } );
+    console.log('no current user')
+    res.render('urls_index', { urls: urlDatabase, user: {} } );
   }
 });
 
@@ -66,7 +69,7 @@ app.get('/urls/:id', (req, res) => {
   const url = {
     short: req.params.id,
     long: urlDatabase[req.params.id] };
-  const user = findUser(req.cookies['user_id'])
+  const user = findUserById(req.cookies['user_id'])
   if ( urlDatabase[req.params.id] )
   res.render('urls_show', { url, user }  );
 });
@@ -95,7 +98,8 @@ app.post('/urls/:id', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-  res.render('login');
+  // check cookie
+  res.render('login', { user: null });
 })
 // handle the login form submission
 app.post('/login', (req, res) => {
@@ -133,8 +137,8 @@ app.get('/register', (req, res) => {
   res.render('register')
 })
 
-app.post('/logout', (req, res) => {
-  res.clearCookie('username');
+app.get('/logout', (req, res) => {
+  res.clearCookie('user_id');
   res.redirect('/urls');
 })
 
