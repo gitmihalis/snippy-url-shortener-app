@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
-const usersDB = require('./mock-data').users;
+const userDatabase = require('./mock-data').users;
 const urlDatabase = require('./mock-data').urls;
 const PORT = 8080;
 
@@ -14,6 +14,13 @@ function generateRandomString() {
     return randomString;
 }
 
+function findUser(id) {
+  if (userDatabase[id]) {
+    return userDatabase[id]
+  } else {
+    return false;
+  }
+}
 
 const app = express(); // instantiate expressjs
 
@@ -25,15 +32,18 @@ app.get("/", (req, res) => {
 });
 
 app.get('/urls', (req, res) => {
-  let templateVars = {
-    username: req.cookies["username"]
-  };
-  res.render('urls_index', { urls: urlDatabase, templateVars: templateVars } );
+  console.log(req.cookies)
+  const user = findUser( req.cookies["user_id"] )
+  if (user) {
+    res.render('urls_index', { urls: urlDatabase, user } );
+  } else {
+    res.render('register')
+  }
 });
 
 // get new url form
 app.get('/urls/new', (req, res) => {
-  res.render('urls_new', templateVars);
+  res.render('urls_new');
 });
 
 // show url
@@ -41,11 +51,9 @@ app.get('/urls/:id', (req, res) => {
   const url = {
     short: req.params.id,
     long: urlDatabase[req.params.id] };
-  let templateVars = {
-    username: req.cookies["username"]
-  };
+  const user = findUser(req.cookies['user_id'])
   if ( urlDatabase[req.params.id] )
-  res.render('urls_show', { url, templateVars }  );
+  res.render('urls_show', { url, user }  );
 });
 
 // handle shortURL requests:
@@ -85,15 +93,15 @@ app.post('/login', (req, res) => {
 
 app.post('/register', (req, res) => {
   const id = generateRandomString();
-  // create a new object in usersDB
+  // create a new object in userDatabase
   if ( req.body.email  && req.body.password ) {
-    usersDB[id] = {
+    userDatabase[id] = {
       id: id,
       email: req.body['email'],
       password: req.body['password']
     }
     //Set a user_id cookie containing the user's (newly generated) ID.
-    console.log("saved: ", usersDB[id]);
+    console.log("saved: ", userDatabase[id]);
     res.cookie('user_id', id);
     res.redirect('/urls');
   } else { // If the e-mail or password are empty strings, send back a response with the 400 status code.
