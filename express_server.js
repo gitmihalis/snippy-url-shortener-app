@@ -86,16 +86,19 @@ app.post('/login', (req, res) => {
 app.post('/register', (req, res) => {
   const id = generateRandomString();
   // create a new object in usersDB
-  usersDB[id] = {
-    id: id,
-    email: req.body['email'],
-    password: req.body['password']
+  if ( req.body.email  && req.body.password ) {
+    usersDB[id] = {
+      id: id,
+      email: req.body['email'],
+      password: req.body['password']
+    }
+    //Set a user_id cookie containing the user's (newly generated) ID.
+    console.log("saved: ", usersDB[id]);
+    res.cookie('user_id', id);
+    res.redirect('/urls');
+  } else { // If the e-mail or password are empty strings, send back a response with the 400 status code.
+    res.sendStatus(400);
   }
-  if ( usersDB.hasOwnProperty(id) ) console.log("saved: ", usersDB[id]);
-  //Set a user_id cookie containing the user's (newly generated) ID.
-  res.cookie('user_id', id);
-  // Redirect the user back to the /urls page.
-  res.redirect('/urls');
 })
 
 app.get('/register', (req, res) => {
