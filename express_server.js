@@ -86,19 +86,14 @@ app.get('/urls/new', (req, res) => {
 
 // show url
 app.get('/urls/:id', (req, res) => {
+  if (!urlDatabase[req.params.id]) res.sendStatus(404);
   const currentUser = findUserById(req.cookies.user_id);
-  console.log( 'currentUser: ', currentUser)
-  if (currentUser && 
-      urlDatabase[req.params.id] && 
-      currentUser.id === urlDatabase[req.params.id].userID ) {
     const url = {
       short: req.params.id,
-      long: urlDatabase[req.params.id].long 
+      long: urlDatabase[req.params.id].long,
+      user_id: urlDatabase[req.params.id].userID
     };
     res.render('urls_show', { url, userID: req.cookies.user_id }  );
-  } else {
-    res.sendStatus(403);
-  }
 });
 
 // handle shortURL requests:

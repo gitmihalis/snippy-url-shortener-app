@@ -8,8 +8,20 @@
 </head>
 <body>
   <div class="container">
-    <% include partials/_header %>
-    <div class="panel">
+  <% include partials/_header %>
+    <% if (!userID) { %>
+      <div class="alert alert-danger" role="alert">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        <span class="sr-only">Error:</span>
+        You need to login first!
+      </div>
+    <% } else if (userID !== url.user_id) { %>
+      <div class="alert alert-danger" role="alert">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        <span class="sr-only">Error:</span>
+        That url doesn't belong to you!
+      </div>
+    <% } else { %>
       <form method="POST" action="/urls/<%= url.short %>"> 
         <div class="form-horizontal">
           <div class="form-group">
@@ -23,7 +35,7 @@
           </div>
         </div>
       </form>
-    </div>
+    <% } %>
   </div>
 </body>
 </html>
