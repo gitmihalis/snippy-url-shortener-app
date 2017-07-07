@@ -7,8 +7,8 @@
   <% include partials/_head %>
 </head>
 <body>
-  <div class="container">
   <% include partials/_header %>
+  <div class="container">
     <% if (!user) { %>
       <div class="alert alert-danger" role="alert">
         <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
@@ -30,10 +30,10 @@
               <input class="form-control" type="text" name="longURL" value="<%= url.long %>" id="longURL"/>
             </div>
             <div class="col-sm-2">
-              <button onclick=submit"" class="btn btn-sm  btn-default">Update</button>
-              <a href="/urls">Back to Urls</a>           
+              <button onclick=submit"" class="btn btn-sm  btn-default">Update</button>     
             </div>   
           </div>
+          <a href="/urls">Back to Urls</a>      
         </div>
       </form>
     <% } %>
