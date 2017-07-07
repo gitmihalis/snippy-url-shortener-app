@@ -58,10 +58,18 @@ app.get("/", (req, res) => {
   res.send('<h1>Welcome to TinyApp!</h1>')
 });
 
+app.get("/prompt_login", (req, res) => {
+  res.render('prompt_login');
+})
+
 app.get('/urls', (req, res) => {
-  let urls = urlsForUser( req.cookies.user_id );
-  console.log('#urlsForUser : ', urls);
-  res.render('urls_index', { urls, userID: req.cookies.user_id } );
+    const currentUser = findUserById(req.cookies.user_id);
+    if ( !currentUser ) {
+      res.redirect('/prompt_login');
+    } else {
+      let urls = urlsForUser( req.cookies.user_id ); // THISWORKS
+      res.render('urls_index', { urls, userID: req.cookies.user_id } );
+    }
 });
 
 // get new url form
@@ -78,12 +86,24 @@ app.get('/urls/new', (req, res) => {
 
 // show url
 app.get('/urls/:id', (req, res) => {
-  const url = {
-    short: req.params.id,
-    long: urlDatabase[req.params.id].long 
-  };
-  if ( urlDatabase[req.params.id] )
-  res.render('urls_show', { url, userID: req.cookies.user_id }  );
+  const currentUser = findUserById(req.cookies.user_id);
+  if ( currentUser && 
+      urlDatabase[req.params.id] && 
+      currentUser.id === urlDatabase[req.params.id].userID ) {
+    const url = {
+      short: req.params.id,
+      long: urlDatabase[req.params.id].long 
+    };
+    res.render('urls_show', { url, userID: req.cookies.user_id }  );
+  } else {
+    // if does not exist
+    if (!urlDatabase[req.params.id]) 
+      res.sendStatus(404);
+    else if (urlDatabase[req.params.id].userID !== currentUser.id) 
+      res.sendStatus(403);
+    else
+      res.redirect('/prompt_login');
+  }
 });
 
 // handle shortURL requests:
@@ -95,9 +115,9 @@ app.get("/u/:shortURL", (req, res) => {
 app.post("/urls", (req, res) => {
   // console.log(` req.body.longURL: ${req.body.longURL}`);  // debug statement to see POST parameters
   let shortURL = generateRandomString();
-  urlDatabase[shortURL].long = req.body.longURL;
+  urlDatabase[shortURL]= { long: req.body.longURL, userID: req.cookies.user_id }
   console.log('post to urlDatabase: ', urlDatabase);
-  res.send("Ok");        
+  res.redirect('/urls');
    // Respond with 'Ok' (we will replace this)
 });
 
