@@ -52,7 +52,7 @@ const app = express(); // instantiate expressjs
 app.set('view engine', 'ejs');
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded( {extended: true} )); 
-app.use(cookieParser());
+app.use( cookieParser() );
 
 app.get("/", (req, res) => {
   res.render('login');
@@ -64,12 +64,12 @@ app.get("/prompt_login", (req, res) => {
 
 app.get('/urls', (req, res) => {
     const currentUser = findUserById(req.cookies.user_id);
-    if ( !currentUser ) {
-      res.redirect('/prompt_login');
-    } else {
+    // if ( !currentUser ) {
+    //   res.redirect('/prompt_login');
+    // } else {
       let urls = urlsForUser( req.cookies.user_id ); // THISWORKS
       res.render('urls_index', { urls, userID: req.cookies.user_id } );
-    }
+    // }
 });
 
 // get new url form
