@@ -101,6 +101,7 @@ app.get('/urls/:id', (req, res) => {
 
 // handle shortURL requests:
 app.get("/u/:shortURL", (req, res) => {
+  if ( !urlDatabase[req.params.shortURL] ) res.sendStatus(404);
   const longURL = urlDatabase[req.params.shortURL].long;
   res.redirect(longURL);
 });
