@@ -87,7 +87,8 @@ app.get('/urls/new', (req, res) => {
 // show url
 app.get('/urls/:id', (req, res) => {
   const currentUser = findUserById(req.cookies.user_id);
-  if ( currentUser && 
+  console.log( 'currentUser: ', currentUser)
+  if (currentUser && 
       urlDatabase[req.params.id] && 
       currentUser.id === urlDatabase[req.params.id].userID ) {
     const url = {
@@ -96,13 +97,7 @@ app.get('/urls/:id', (req, res) => {
     };
     res.render('urls_show', { url, userID: req.cookies.user_id }  );
   } else {
-    // if does not exist
-    if (!urlDatabase[req.params.id]) 
-      res.sendStatus(404);
-    else if (urlDatabase[req.params.id].userID !== currentUser.id) 
-      res.sendStatus(403);
-    else
-      res.redirect('/prompt_login');
+    res.sendStatus(403);
   }
 });
 
