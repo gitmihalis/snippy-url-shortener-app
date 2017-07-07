@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
 const userDatabase = require('./mock-data').users;
 const urlDatabase = require('./mock-data').urls;
+var bcrypt = require('bcrypt');
 const PORT = 8080;
 
 function generateRandomString() {
@@ -31,8 +32,7 @@ function findUserByEmail(email) {
 }
 
 function authorize(user, password) {
-  if ( user.password === password) return true;
-  return false;
+  return bcrypt.compareSync( password, user.password); 
 }
 
 function urlsForUser(id) {
@@ -131,9 +131,9 @@ app.get('/login', (req, res) => {
 // handle the login form submission
 app.post('/login', (req, res) => {
   const email = req.body.email;
-  const pwd = req.body.password;
+  const plainPassword = req.body.password; // this is plain text
   const currentUser = findUserByEmail(email);
-  if ( currentUser && authorize(currentUser, pwd ) ) {
+  if ( currentUser && authorize(currentUser, plainPassword ) ) {
     console.log('found user: ', currentUser)
     res.cookie('user_id', currentUser.id)
     res.redirect('/urls');
@@ -146,10 +146,11 @@ app.post('/register', (req, res) => {
   const id = generateRandomString();
   // create a new object in userDatabase
   if ( req.body.email  && req.body.password ) {
+    const hashedPassword = bcrypt.hashSync(req.body['password'], 10);
     userDatabase[id] = {
       id: id,
       email: req.body['email'],
-      password: req.body['password']
+      password: hashedPassword
     }
     //Set a user_id cookie containing the user's (newly generated) ID.
     console.log("saved: ", userDatabase[id]);
