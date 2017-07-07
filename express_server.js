@@ -39,7 +39,6 @@ function urlsForUser(id) {
   //  return subset of URL database that belongs to the user with ID
   const urls = {};
   for ( u in urlDatabase) {
-    console.log(urlDatabase[u]);
     if ( urlDatabase[u].userID == id) {
       urls[u] = urlDatabase[u];
     }
@@ -71,7 +70,7 @@ app.get('/urls', (req, res) => {
     //   res.redirect('/prompt_login');
     // } else {
       let urls = urlsForUser( req.session.user_id ); // THISWORKS
-      res.render('urls_index', { urls, userID: req.session.user_id } );
+      res.render('urls_index', { urls, user: currentUser } );
     // }
 });
 
@@ -96,7 +95,7 @@ app.get('/urls/:id', (req, res) => {
       long: urlDatabase[req.params.id].long,
       user_id: urlDatabase[req.params.id].userID
     };
-    res.render('urls_show', { url, userID: req.session.user_id }  );
+    res.render('urls_show', { url, user: currentUser }  );
 });
 
 // handle shortURL requests:
@@ -171,8 +170,8 @@ app.get('/register', (req, res) => {
 })
 
 app.get('/logout', (req, res) => {
-  res.clearCookie('user_id');
-  res.redirect('/');
+  req.session = null;
+  res.redirect('/urls');
 })
 
 

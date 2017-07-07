@@ -7,13 +7,13 @@
 <body class>
   <% include partials/_header %>
   <div class="container">
-    <% if (userID) { %>
+    <% if (user) { %>
     <h2> List of URLs </h2>
     <ul class="list-group">
       <% for (url in urls) { %>
         <li class="list-group-item clearfix">
         <a href="<%= urls[url].long %>"><%= urls[url].long %></a>  ⟶  <%= url %>
-          <% if (userID === urls[url].userID) { %>
+          <% if (user.id === urls[url].userID) { %>
             <div class="btn-group pull-right">
               <form class="form-inline" method="POST" action="/urls/<%= url %>/delete"> 
                 <a class="btn btn-default" href="/urls/<%= url %>">Edit</a>

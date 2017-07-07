@@ -1,8 +1,8 @@
 <div class="container">
   <div class="jumbotron">
     <h1>Tiny App</h1> 
-    <% if ( userID ) { %>
-      <h4> Hello, <%= userID %>
+    <% if ( user ) { %>
+      <h4> Hello, <%= user.email %>
       <a class="btn btn-danger" href="/logout">Logout</a>
     <% } else { %>
       <% include _signup_links %>
