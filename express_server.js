@@ -147,10 +147,21 @@ app.post('/login', (req, res) => {
 });
 
 app.post('/register', (req, res) => {
+  const messages = [];
   const id = generateRandomString();
   // create a new object in userDatabase
   if ( req.body.email  && req.body.password ) {
+     console.log(findUserByEmail(req.body.email));
+    // if ( findUserByEmail( req.body.email ) !== false ) {
+    //   messages.push('That email is already taken!');
+    //   res.render('/register', { messages: messages })
+    // }
+
     const hashedPassword = bcrypt.hashSync(req.body['password'], 10);
+    if ( findUserByEmail(req.body.email) ) {
+      messages.push('That email is already taken');
+      res.render('register', { messages });
+    }
     userDatabase[id] = {
       id: id,
       email: req.body['email'],
@@ -158,17 +169,24 @@ app.post('/register', (req, res) => {
     }
     //Set a user_id cookie containing the user's (newly generated) ID.
     console.log("saved: ", userDatabase[id]);
-    res.session.user_id = id;
+    req.session.user_id = id;
     res.redirect('/urls');
-  } else { // If the e-mail or password are empty strings...
-    res.sendStatus(400);
   }
-})
+
+  if ( !req.body.email || !req.body.password ) {
+    if (!req.body.email) messages.push('Please input your email.');
+    if (!req.body.password) messages.push('Please input a password');
+  }
+  res.render('register',  { messages: messages });
+  });
+  // } else { // If the e-mail or password are empty strings...
+  //   res.sendStatus(400);
+  // }
 
 app.get('/register', (req, res) => {
   const currentUser = findUserById(req.session.user_id);
   if ( currentUser ) res.redirect('/urls');
-  res.render('register')
+  res.render('register', { messages: [] });
 })
 
 app.get('/logout', (req, res) => {
