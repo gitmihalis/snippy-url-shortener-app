@@ -1,9 +1,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
 const userDatabase = require('./mock-data').users;
 const urlDatabase = require('./mock-data').urls;
-var bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 const PORT = 8080;
 
 function generateRandomString() {
@@ -52,7 +52,10 @@ const app = express(); // instantiate expressjs
 app.set('view engine', 'ejs');
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded( {extended: true} )); 
-app.use( cookieParser() );
+app.use( cookieSession({
+  name: 'session',
+  keys: ['user_id']
+}) );
 
 app.get("/", (req, res) => {
   res.render('login');
@@ -63,22 +66,22 @@ app.get("/prompt_login", (req, res) => {
 })
 
 app.get('/urls', (req, res) => {
-    const currentUser = findUserById(req.cookies.user_id);
+    const currentUser = findUserById(req.session.user_id);
     // if ( !currentUser ) {
     //   res.redirect('/prompt_login');
     // } else {
-      let urls = urlsForUser( req.cookies.user_id ); // THISWORKS
-      res.render('urls_index', { urls, userID: req.cookies.user_id } );
+      let urls = urlsForUser( req.session.user_id ); // THISWORKS
+      res.render('urls_index', { urls, userID: req.session.user_id } );
     // }
 });
 
 // get new url form
 app.get('/urls/new', (req, res) => {
   // if not current user, redirext to LOGIN PAGE
-  const userID = findUserById(req.cookies.user_id);
+  const userID = findUserById(req.session.user_id);
   console.log('id:', userID);
   if (userID) {
-    res.render('urls_new', { userID: req.cookies.user_id } );
+    res.render('urls_new', { userID: req.session.user_id } );
   } else {
     res.redirect('/login');
   }
@@ -87,13 +90,13 @@ app.get('/urls/new', (req, res) => {
 // show url
 app.get('/urls/:id', (req, res) => {
   if (!urlDatabase[req.params.id]) res.sendStatus(404);
-  const currentUser = findUserById(req.cookies.user_id);
+  const currentUser = findUserById(req.session.user_id);
     const url = {
       short: req.params.id,
       long: urlDatabase[req.params.id].long,
       user_id: urlDatabase[req.params.id].userID
     };
-    res.render('urls_show', { url, userID: req.cookies.user_id }  );
+    res.render('urls_show', { url, userID: req.session.user_id }  );
 });
 
 // handle shortURL requests:
@@ -105,7 +108,7 @@ app.get("/u/:shortURL", (req, res) => {
 app.post("/urls", (req, res) => {
   // console.log(` req.body.longURL: ${req.body.longURL}`);  // debug statement to see POST parameters
   let shortURL = generateRandomString();
-  urlDatabase[shortURL]= { long: req.body.longURL, userID: req.cookies.user_id }
+  urlDatabase[shortURL]= { long: req.body.longURL, userID: req.session.user_id }
   console.log('post to urlDatabase: ', urlDatabase);
   res.redirect('/urls');
    // Respond with 'Ok' (we will replace this)
@@ -115,7 +118,7 @@ app.post('/urls/:id', (req, res) => {
   // update the resouce
   // only if userID == req.cookies
   let urlID = req.params.id;
-  if ( req.cookies.user_id !== urlDatabase[urlID].userID ) {
+  if ( req.session.user_id !== urlDatabase[urlID].userID ) {
     res.sendStatus(403);
     return;
   }
@@ -135,7 +138,8 @@ app.post('/login', (req, res) => {
   const currentUser = findUserByEmail(email);
   if ( currentUser && authorize(currentUser, plainPassword ) ) {
     console.log('found user: ', currentUser)
-    res.cookie('user_id', currentUser.id)
+    // set the user_id from the request
+    req.session.user_id = currentUser.id;
     res.redirect('/urls');
   } else {
     res.sendStatus(403);
@@ -154,7 +158,7 @@ app.post('/register', (req, res) => {
     }
     //Set a user_id cookie containing the user's (newly generated) ID.
     console.log("saved: ", userDatabase[id]);
-    res.cookie('user_id', id);
+    res.session.user_id = id;
     res.redirect('/urls');
   } else { // If the e-mail or password are empty strings...
     res.sendStatus(400);
