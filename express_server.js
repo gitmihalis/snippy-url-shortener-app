@@ -165,6 +165,8 @@ app.post('/register', (req, res) => {
 })
 
 app.get('/register', (req, res) => {
+  const currentUser = findUserById(req.session.user_id);
+  if ( currentUser ) res.redirect('/urls');
   res.render('register')
 })
 
@@ -177,7 +179,7 @@ app.get('/logout', (req, res) => {
 app.post('/urls/:id/delete', (req, res) => {
   // delete the resouce
   const currentUser = findUserById(req.session.user_id)
-  let id = req.params.id; //xxx
+  let id = req.params.id; 
   if ( !currentUser || currentUser.id !== urlDatabase[id].userID ) res.sendStatus(403);
   delete urlDatabase[id];
   console.log(`delete url: ${id} from ${urlDatabase}`);
