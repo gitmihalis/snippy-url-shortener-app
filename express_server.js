@@ -55,7 +55,7 @@ app.use(bodyParser.urlencoded( {extended: true} ));
 app.use(cookieParser());
 
 app.get("/", (req, res) => {
-  res.send('<h1>Welcome to TinyApp!</h1>')
+  res.render('login');
 });
 
 app.get("/prompt_login", (req, res) => {
@@ -171,7 +171,7 @@ app.get('/register', (req, res) => {
 
 app.get('/logout', (req, res) => {
   res.clearCookie('user_id');
-  res.redirect('/urls');
+  res.redirect('/');
 })
 
 
