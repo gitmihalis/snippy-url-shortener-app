@@ -127,8 +127,9 @@ app.post('/urls/:id', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-  // check cookie
-  res.render('login', { userID: null });
+  const currentUser = findUserById(req.session.user_id);
+  if ( currentUser ) res.redirect('/urls');
+  res.render('login');
 })
 // handle the login form submission
 app.post('/login', (req, res) => {
