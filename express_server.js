@@ -177,10 +177,10 @@ app.get('/logout', (req, res) => {
 app.post('/urls/:id/delete', (req, res) => {
   // delete the resouce
   const currentUser = findUserById(req.session.user_id)
-  if ( !currentUser ) res.sendStatus(403);
-  let id = req.params.id;
+  let id = req.params.id; //xxx
+  if ( !currentUser || currentUser.id !== urlDatabase[id].userID ) res.sendStatus(403);
   delete urlDatabase[id];
-  console.log(urlDatabase)
+  console.log(`delete url: ${id} from ${urlDatabase}`);
   res.redirect('/urls');
 });
 
