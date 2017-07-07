@@ -77,10 +77,9 @@ app.get('/urls', (req, res) => {
 // get new url form
 app.get('/urls/new', (req, res) => {
   // if not current user, redirext to LOGIN PAGE
-  const userID = findUserById(req.session.user_id);
-  console.log('id:', userID);
-  if (userID) {
-    res.render('urls_new', { userID: req.session.user_id } );
+  const currentUser = findUserById(req.session.user_id);
+  if (currentUser) {
+    res.render('urls_new', { user: currentUser } );
   } else {
     res.redirect('/login');
   }

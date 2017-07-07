@@ -8,8 +8,8 @@
   <% include partials/_header %>
   <div class="container">
     <% if (user) { %>
-    <h2> List of URLs </h2>
-    <ul class="list-group">
+      <h2> List of URLs </h2>
+      <ul class="list-group">
       <% for (url in urls) { %>
         <li class="list-group-item clearfix">
         <a href="<%= urls[url].long %>"><%= urls[url].long %></a>  ⟶  <%= url %>
@@ -24,6 +24,9 @@
         </li>
       <% } %>
       </ul>
+      <div class="container">
+        <a class="btn btn-success" href="/urls/new">New</a>
+      </div>
       <% } else { %>
         <div class="alert alert-danger" role="alert">
           <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
