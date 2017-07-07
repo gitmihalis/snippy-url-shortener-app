@@ -109,7 +109,7 @@ app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
   urlDatabase[shortURL]= { long: req.body.longURL, userID: req.session.user_id }
   console.log('post to urlDatabase: ', urlDatabase);
-  res.redirect('/urls');
+  res.redirect('/urls/' + shortURL);
    // Respond with 'Ok' (we will replace this)
 });
 
