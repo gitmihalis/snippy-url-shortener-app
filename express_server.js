@@ -1,8 +1,12 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
+const methodOverride = require('method-override');
+
+// fake DBs
 const userDatabase = require('./mock-data').users;
 const urlDatabase = require('./mock-data').urls;
+
 const bcrypt = require('bcrypt');
 const PORT = process.env.PORT || 8080;
 
@@ -50,6 +54,7 @@ const app = express(); // instantiate express
 // parse application/x-www-form-urlencoded
 app.set('view engine', 'ejs');
 // config middleware
+app.use(methodOverride('_method'))
 app.use(bodyParser.urlencoded( {extended: true} )); 
 app.use( cookieSession({
   name: 'session',
@@ -101,7 +106,7 @@ app.post("/urls", (req, res) => {
   res.redirect('/urls/' + shortURL);
 });
 // PUT url
-app.post('/urls/:id', (req, res) => {
+app.put('/urls/:id', (req, res) => {
   const urlID = req.params.id;
   if ( req.session.user_id !== urlDatabase[urlID].userID ) {
     res.sendStatus(403);
@@ -166,9 +171,12 @@ app.get('/register', (req, res) => {
 })
 app.get('/logout', (req, res) => {
   req.session = null;
-  res.redirect('/urls');
+  res.redirect('/thank_you');
 })
-app.post('/urls/:id/delete', (req, res) => {
+app.get('/thank_you', (req, res) => {
+  res.render('thank_you');
+})
+app.delete('/urls/:id/delete', (req, res) => {
   // delete the resouce
   const currentUser = findUserById(req.session.user_id)
   let id = req.params.id; 

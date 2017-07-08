@@ -15,7 +15,7 @@
         <a href="<%= urls[url].long %>"><%= urls[url].long %></a>  ⟶  <%= url %>
           <% if (user.id === urls[url].userID) { %>
             <div class="btn-group pull-right">
-              <form class="form-inline" method="POST" action="/urls/<%= url %>/delete"> 
+              <form class="form-inline" method="POST" action="/urls/<%= url %>/delete?_method=DELETE"> 
                 <a class="btn btn-default" href="/urls/<%= url %>">Edit</a>
                 <button onclick="submit" class="btn btn-danger">Delete</button>
               </form>

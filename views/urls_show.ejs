@@ -23,7 +23,7 @@
         That url doesn't belong to you!
       </div>
     <% } else { %>
-      <form method="POST" action="/urls/<%= url.short %>"> 
+      <form method="POST" action="/urls/<%= url.short %>?_method=PUT"> 
         <div class="form-horizontal">
           <div class="form-group">
             <label class="col-sm-2 control-label" for="longURL"><%= url.short %></label>
