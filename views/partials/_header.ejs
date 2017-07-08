@@ -1,8 +1,9 @@
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <div class="navbar-header">
+      <img src="" alt="">
       <a class="navbar-brand" href="/urls">
-        Snippy Url
+        Snippy
       </a>
       <% if ( !user ) { %>
         <% include _signup_links %>
@@ -14,10 +15,10 @@
 </nav>
 <div class="container">
   <div class="jumbotron">
-    <h1>Tiny App</h1> 
+    <h1>Snippy App</h1> 
     <% if ( user ) { %>
       <h4> Hello, <%= user.email %>
     <% } %>
-    <p>Tiny App is the most popular URL link shortener in the entire LHL community.</p> 
+    <p>Snippy is the most popular URL link shortener in the entire LHL community right now.</p> 
   </div>
 </div>
