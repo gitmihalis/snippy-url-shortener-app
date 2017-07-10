@@ -102,11 +102,16 @@ app.get('/urls/:id', (req, res) => {
     res.render('urls_show', { url, user: currentUser }  );
 });
 
-// let anyone visit the url
+// Anyone can be redirected from the /u/:shortURL endpoint to the long URL.
 app.get("/u/:shortURL", (req, res) => {
-  if ( !urlDatabase[req.params.shortURL] ) res.sendStatus(404);
-  const longURL = urlDatabase[req.params.shortURL].long;
-  res.redirect(longURL);
+  const url = urlDatabase[req.params.shortURL];
+  if ( !url ) {
+    res.sendStatus(404);
+  }
+  // Increment the view count before redirecting to the link.
+  url.views += 1;
+  console.log(url.views);
+  res.redirect(url.long);
 });
 
 app.post("/urls", (req, res) => {
