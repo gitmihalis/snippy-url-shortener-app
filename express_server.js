@@ -108,9 +108,9 @@ app.get("/u/:shortURL", (req, res) => {
   if ( !url ) {
     res.sendStatus(404);
   }
-  // Increment the view count before redirecting to the link.
-  url.views += 1;
-  console.log(url.views);
+  // Increment the view count before routing the long url destination.
+  url['views'].total += 1;
+  console.log(url['views']);
   res.redirect(url.long);
 });
 
