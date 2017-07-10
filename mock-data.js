@@ -24,4 +24,9 @@ const urls = {
   "9sm5xK": { long: "http://www.google.com", userID: "mihaliswastaken", views: { unique: 0, total: 0 } },
 };
 
-module.exports = { urls, users };
+const visits = [
+  { visitor_id: "E3rds4", timestamp: Date.now() - 2122 },
+  { visitor_id: "r5tdf9", timestamp: Date.now() - 189282 },
+];
+
+module.exports = { urls, users, visits };

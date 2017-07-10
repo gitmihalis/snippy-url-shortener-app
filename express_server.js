@@ -6,6 +6,7 @@ const methodOverride = require('method-override');
 // fake DBs
 const userDatabase = require('./mock-data').users;
 const urlDatabase = require('./mock-data').urls;
+const visitorDatabase = require('./mock-data').visits;
 
 const bcrypt = require('bcrypt');
 const PORT = process.env.PORT || 8080;
@@ -114,15 +115,20 @@ app.get("/u/:shortURL", (req, res) => {
     res.sendStatus(404);
   }
   // Set a session cookie to identify unique users, epiring in year: 2065.
+  const visitorID = generateRandomString();
   if (!req.session.visitor_id) {
-    req.session.visitor_id = generateRandomString();
+    req.session.visitor_id = visitorID;
     url['views'].unique += 1;
   }
   // Count each time the short url is followed...
   url['views'].total += 1;
-  // Count each time the link follower is a unique user.
-  // set a permanent cookie
-  // compare if that cookie is in the database...
+
+  // store the visit in the visits DB
+  visitorDatabase.push({
+    visitor_id: req.session.visitor_id,
+    timestamp: Date.now(),
+  });
+  console.log(visitorDatabase);
   res.redirect(url.long);
 });
 
