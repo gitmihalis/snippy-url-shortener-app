@@ -105,7 +105,7 @@ app.get('/urls/:id', (req, res) => {
       uniqueViews: url['views'].unique,
       totalViews: url['views'].total,
     };
-    res.render('urls_show', { url: data, user: currentUser }  );
+    res.render('urls_show', { url: data, user: currentUser, visits: visitorDatabase }  );
 });
 
 // let anyone visit the url
