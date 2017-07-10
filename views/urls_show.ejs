@@ -16,7 +16,7 @@
         <span class="sr-only">Error:</span>
         You need to login first!
       </div>
-    <% } else if (user.id !== url.user_id) { %>
+    <% } else if (user.id !== url.userID) { %>
       <div class="alert alert-danger" role="alert">
         <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
         <span class="sr-only">Error:</span>
@@ -32,9 +32,10 @@
             </div>
             <div class="col-sm-2">
               <button onclick=submit"" class="btn btn-sm  btn-default">Update</button>     
-            </div>   
+            </div> 
           </div>
-          <a href="/urls">Back to Urls</a>      
+          <a href="/urls">Back to Urls</a>
+          <span class="views">unique: <%= url.uniqueViews %> | total: <%= url.totalViews %></span>   
         </div>
       </form>
     <% } %>

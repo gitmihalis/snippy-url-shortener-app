@@ -94,23 +94,25 @@ app.get('/urls/new', (req, res) => {
 app.get('/urls/:id', (req, res) => {
   if (!urlDatabase[req.params.id]) res.sendStatus(404);
   const currentUser = findUserById(req.session.user_id);
-    const url = {
+  // Construct an objet to use in the views
+    const url = urlDatabase[req.params.id];
+    const data = {
       short: req.params.id,
-      long: urlDatabase[req.params.id].long,
-      user_id: urlDatabase[req.params.id].userID
+      long: url.long,
+      userID: url.userID,
+      uniqueViews: url['views'].unique,
+      totalViews: url['views'].total,
     };
-    res.render('urls_show', { url, user: currentUser }  );
+    res.render('urls_show', { url: data, user: currentUser }  );
 });
 
-// Anyone can be redirected from the /u/:shortURL endpoint to the long URL.
+// let anyone visit the url
 app.get("/u/:shortURL", (req, res) => {
   const url = urlDatabase[req.params.shortURL];
   if ( !url ) {
     res.sendStatus(404);
   }
-  // Increment the view count before routing the long url destination.
   url['views'].total += 1;
-  console.log(url['views']);
   res.redirect(url.long);
 });
 
