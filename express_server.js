@@ -21,16 +21,17 @@ function generateRandomString() {
 
 function findUserById(id) {
   if (userDatabase[id]) {
-    return userDatabase[id]
+    return userDatabase[id];
   } else {
     return false;
   }
 }
 
 function findUserByEmail(email) {
-  for ( user in userDatabase) {
-      console.log(userDatabase[user])
-    if (userDatabase[user].email === email) return userDatabase[user];
+  for (user in userDatabase) {
+    if (userDatabase[user].email === email) {
+      return userDatabase[user];
+    }
   }
   return false;
 }
@@ -43,7 +44,7 @@ function authorize(user, password) {
 function urlsForUser(id) {
   const urls = {};
   for ( u in urlDatabase) {
-    if ( urlDatabase[u].userID == id) {
+    if ( urlDatabase[u].userID === id) {
       urls[u] = urlDatabase[u];
     }
   }
@@ -54,7 +55,11 @@ const app = express(); // instantiate express
 // parse application/x-www-form-urlencoded
 app.set('view engine', 'ejs');
 // config middleware
-app.use(methodOverride('_method'))
+app.use(function(err, req, res, next) {
+  console.error(err.stack);
+  res.status(500).send('Aargh! ... Abandon ship!\nError: ' + err);
+});
+app.use(methodOverride('_method'));
 app.use(bodyParser.urlencoded( {extended: true} )); 
 app.use( cookieSession({
   name: 'session',
@@ -65,14 +70,17 @@ app.use( cookieSession({
 app.get("/", (req, res) => {
   res.render('login');
 });
+
 app.get("/prompt_login", (req, res) => {
   res.render('prompt_login');
 });
+
 app.get('/urls', (req, res) => {
     const currentUser = findUserById(req.session.user_id);
       let urls = urlsForUser( req.session.user_id );
       res.render('urls_index', { urls, user: currentUser } );
 });
+
 app.get('/urls/new', (req, res) => {
   const currentUser = findUserById(req.session.user_id);
   // If no user session => redirext to login page
@@ -82,6 +90,7 @@ app.get('/urls/new', (req, res) => {
     res.redirect('/login');
   }
 });
+
 app.get('/urls/:id', (req, res) => {
   if (!urlDatabase[req.params.id]) res.sendStatus(404);
   const currentUser = findUserById(req.session.user_id);
@@ -92,12 +101,14 @@ app.get('/urls/:id', (req, res) => {
     };
     res.render('urls_show', { url, user: currentUser }  );
 });
+
 // let anyone visit the url
 app.get("/u/:shortURL", (req, res) => {
   if ( !urlDatabase[req.params.shortURL] ) res.sendStatus(404);
   const longURL = urlDatabase[req.params.shortURL].long;
   res.redirect(longURL);
 });
+
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString();
   // Save the url in the database
@@ -105,6 +116,7 @@ app.post("/urls", (req, res) => {
   console.log('posted to urlDatabase: ', urlDatabase);
   res.redirect('/urls/' + shortURL);
 });
+
 // PUT url
 app.put('/urls/:id', (req, res) => {
   const urlID = req.params.id;
@@ -116,11 +128,13 @@ app.put('/urls/:id', (req, res) => {
   console.log('put to urlDatabase: ', urlDatabase);
   res.redirect('/urls');
 });
+
 app.get('/login', (req, res) => {
   const currentUser = findUserById(req.session.user_id);
   if ( currentUser ) res.redirect('/urls');
   res.render('login');
-})
+});
+
 app.post('/login', (req, res) => {
   const email = req.body.email;
   const plainPassword = req.body.password; 
@@ -163,19 +177,23 @@ app.post('/register', (req, res) => {
     if (!req.body.password) messages.push('Please input a password');
   }
   res.render('register',  { messages: messages });
-  });
+});
+
 app.get('/register', (req, res) => {
   const currentUser = findUserById(req.session.user_id);
   if ( currentUser ) res.redirect('/urls');
   res.render('register', { messages: [] });
-})
+});
+
 app.get('/logout', (req, res) => {
   req.session = null;
   res.redirect('/thank_you');
-})
+});
+
 app.get('/thank_you', (req, res) => {
   res.render('thank_you');
-})
+});
+
 app.delete('/urls/:id/delete', (req, res) => {
   // delete the resouce
   const currentUser = findUserById(req.session.user_id)
@@ -185,10 +203,7 @@ app.delete('/urls/:id/delete', (req, res) => {
   console.log(`delete url: ${id} from ${urlDatabase}`);
   res.redirect('/urls');
 });
-app.use(function(err, req, res, next) {
-  console.error(err.stack);
-  res.status(500).send('Aargh! ... Abandon ship!');
-});
+
 app.listen(PORT, () => {
   console.log(`Go to http://localhost:${PORT} in your browser to see Tiny App.`);
 });
