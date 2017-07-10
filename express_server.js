@@ -60,11 +60,12 @@ app.use(function(err, req, res, next) {
   res.status(500).send('Aargh! ... Abandon ship!\nError: ' + err);
 });
 app.use(methodOverride('_method'));
-app.use(bodyParser.urlencoded( {extended: true} )); 
-app.use( cookieSession({
+app.use(bodyParser.urlencoded( {extended: true} ));
+
+app.use(cookieSession({
   name: 'session',
-  keys: ['user_id']
-}) );
+  keys: ['user_id', 'visitor_id']
+}));
 
 // handle routes
 app.get("/", (req, res) => {
@@ -112,7 +113,16 @@ app.get("/u/:shortURL", (req, res) => {
   if ( !url ) {
     res.sendStatus(404);
   }
+  // Set a session cookie to identify unique users, epiring in year: 2065.
+  if (!req.session.visitor_id) {
+    req.session.visitor_id = generateRandomString();
+    url['views'].unique += 1;
+  }
+  // Count each time the short url is followed...
   url['views'].total += 1;
+  // Count each time the link follower is a unique user.
+  // set a permanent cookie
+  // compare if that cookie is in the database...
   res.redirect(url.long);
 });
 
