@@ -119,7 +119,10 @@ app.get("/u/:shortURL", (req, res) => {
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString();
   // Save the url in the database
-  urlDatabase[shortURL]= { long: req.body.longURL, userID: req.session.user_id }
+  urlDatabase[shortURL]= { 
+    long: req.body.longURL, 
+    userID: req.session.user_id,
+    views: { unique: 0, total: 0 } }
   console.log('posted to urlDatabase: ', urlDatabase);
   res.redirect('/urls/' + shortURL);
 });
