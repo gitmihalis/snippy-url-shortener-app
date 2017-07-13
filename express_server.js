@@ -6,7 +6,7 @@ const methodOverride = require('method-override');
 // fake DBs
 const userDatabase = require('./mock-data').users;
 const urlDatabase = require('./mock-data').urls;
-const visitorDatabase = require('./mock-data').visits;
+const visitsDatabase = require('./mock-data').visits;
 
 const bcrypt = require('bcrypt');
 const PORT = process.env.PORT || 8080;
@@ -58,7 +58,7 @@ app.set('view engine', 'ejs');
 // config middleware
 app.use(function(err, req, res, next) {
   console.error(err.stack);
-  res.status(500).send('Aargh! ... Abandon ship!\nError: ' + err);
+  res.status(500).send('Error: ' + err);
 });
 app.use(methodOverride('_method'));
 app.use(bodyParser.urlencoded( {extended: true} ));
@@ -94,18 +94,23 @@ app.get('/urls/new', (req, res) => {
 });
 
 app.get('/urls/:id', (req, res) => {
-  if (!urlDatabase[req.params.id]) res.sendStatus(404);
+  if (!urlDatabase[req.params.id]) {
+    res.sendStatus(404);
+  }
   const currentUser = findUserById(req.session.user_id);
-  // Construct an objet to use in the views
     const url = urlDatabase[req.params.id];
-    const data = {
+    const visits = visitsDatabase[req.params.id] || null;
+    console.log(visits);
+    // TODO craete a function that gets the url by the shortURL
+    const urlData = {
       short: req.params.id,
       long: url.long,
       userID: url.userID,
       uniqueViews: url['views'].unique,
       totalViews: url['views'].total,
     };
-    res.render('urls_show', { url: data, user: currentUser, visits: visitorDatabase }  );
+    // TODO create a function that gets the visits for the shortURL
+    res.render('urls_show', { url: urlData, user: currentUser, visits: visits });
 });
 
 // let anyone visit the url
@@ -120,15 +125,16 @@ app.get("/u/:shortURL", (req, res) => {
     req.session.visitor_id = visitorID;
     url['views'].unique += 1;
   }
-  // Count each time the short url is followed...
+  // Count each time a client is redirected to the url destination
   url['views'].total += 1;
 
   // store the visit in the visits DB
-  visitorDatabase.push({
+  visitsDatabase[req.params.id] = {
     visitor_id: req.session.visitor_id,
-    timestamp: Date.now(),
-  });
-  console.log(visitorDatabase);
+    timestamp: Date.now()
+  }
+
+  console.log(visitsDatabase);
   res.redirect(url.long);
 });
 

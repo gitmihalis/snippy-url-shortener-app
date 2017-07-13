@@ -34,31 +34,34 @@
               <button onclick=submit"" class="btn btn-sm  btn-default">Update</button>     
             </div> 
           </div>
-          <a href="/urls">Back to Urls</a>
-          <span class="views">unique: <%= url.uniqueViews %> | total: <%= url.totalViews %></span>   
+          <a class="pull-right" href="/urls">Back to Urls</a>
+          <div>
+            <h6 class="label label-default">View Counter</h6>
+            <span class="views">unique <span class="badge"><%= url.uniqueViews %></span> | total: <span class="badge"><%= url.totalViews %></span></span>   
+          </div>
         </div>
       </form>
     <% } %>
   </div>
   <div class="container">
-    <div class="panel">
+    <% if (visits) { %>
       <table class="table">
-      <thead>
-        <tr>
-          <th>visitor</th>
-          <th>timestamp</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% for ( visit of visits ) { %>
-        <tr>
-          <td><%= visit.visitor_id %></td>
-          <td><%= visit.timestamp %></td>
-        </tr>
-        <% } %>
-      </tbody>
+        <thead>
+          <tr>
+            <th>visitor</th>
+            <th>timestamp</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for ( visit of visits ) { %>
+            <tr>
+              <td><%= visit.visitor_id %></td>
+              <td><%= visit.timestamp %></td>
+            </tr>
+          <% } %>
+        </tbody>
       </table>
-    </div>
+    <% } %>
   </div>
 </body>
 </html>
