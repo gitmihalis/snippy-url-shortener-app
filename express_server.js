@@ -100,7 +100,6 @@ app.get('/urls/:id', (req, res) => {
   const currentUser = findUserById(req.session.user_id);
     const url = urlDatabase[req.params.id];
     const visits = visitsDatabase[req.params.id] || null;
-    console.log(visits);
     // TODO craete a function that gets the url by the shortURL
     const urlData = {
       short: req.params.id,
@@ -113,13 +112,14 @@ app.get('/urls/:id', (req, res) => {
     res.render('urls_show', { url: urlData, user: currentUser, visits: visits });
 });
 
-// let anyone visit the url
+// The short link that can be shared with anyone
 app.get("/u/:shortURL", (req, res) => {
   const url = urlDatabase[req.params.shortURL];
   if ( !url ) {
     res.sendStatus(404);
   }
-  // Set a session cookie to identify unique users, epiring in year: 2065.
+  // Set a session cookie to identify unique users
+  // TODO set sesssion cookie expiration date
   const visitorID = generateRandomString();
   if (!req.session.visitor_id) {
     req.session.visitor_id = visitorID;
@@ -129,12 +129,11 @@ app.get("/u/:shortURL", (req, res) => {
   url['views'].total += 1;
 
   // store the visit in the visits DB
-  visitsDatabase[req.params.id] = {
-    visitor_id: req.session.visitor_id,
-    timestamp: Date.now()
-  }
-
-  console.log(visitsDatabase);
+    if (!visitsDatabase[req.params.shortURL]) {
+      visitsDatabase[req.params.shortURL] = [ {visitor_id: req.session.visitor_id, timestamp: Date.now()} ];
+    } else {
+      visitsDatabase[req.params.shortURL].push( {visitor_id: req.session.visitor_id, timestamp: Date.now()} );
+    }
   res.redirect(url.long);
 });
 
