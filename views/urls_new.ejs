@@ -6,10 +6,23 @@
 </head>
 <body>
   <% include partials/_header %>
-  <form action="/urls" method="POST" style="margin:150px;">
-    <label for="longURL">Enter a URL:</label>
-    <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">
-    <input type="submit" value="Submit">
-  </form>
+  <div class="container">
+  <div class="page-header">
+    <h3>Input a long url to make short</h3>
+  </div>
+
+  <!-- Stack the columns on mobile by making one full-width and the other half-width -->
+    <div class="row">
+      <form action="/urls" method="POST">
+        <div class="col-xs-12 col-md-8">
+          <label class="sr-only" for="longURL">Enter a url to shorten:</label>
+          <input class="form-control" id="longURL" type="text" name="longURL" placeholder=" Enter a url to shorten  ...http://">
+        </div>
+        <div class="col-xs-6 col-md-4">
+          <input class="btn btn-primary"type="submit" value="Submit">  
+        </div>
+      </form>
+    </div>
+  </div>
   </body>
 </html>

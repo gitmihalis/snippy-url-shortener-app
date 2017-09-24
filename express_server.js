@@ -56,6 +56,7 @@ const app = express(); // instantiate express
 // parse application/x-www-form-urlencoded
 app.set('view engine', 'ejs');
 // config middleware
+app.use(express.static(__dirname + '/public'));
 app.use(function(err, req, res, next) {
   console.error(err.stack);
   res.status(500).send('Error: ' + err);
