@@ -23,9 +23,9 @@ const users = {
 }
 
 const urls = {
-  "abcdef": { long: "http://www.instagram.com", userID: "userRandomID", views: { unique: 0, total: 0 } },
-  "b2xVn2": { long: "http://www.lighthouselabs.ca", userID: "userRandomID", views: { unique: 0, total: 0 } },
-  "9sm5xK": { long: "http://www.google.com", userID: "mihaliswastaken", views: { unique: 0, total: 0 } },
+  "abcdef": { long: "http://www.instagram.com", userID: "demo", views: { unique: 0, total: 0 } },
+  "b2xVn2": { long: "http://www.lighthouselabs.ca", userID: "demo", views: { unique: 0, total: 0 } },
+  "9sm5xK": { long: "http://www.google.com", userID: "demo", views: { unique: 0, total: 0 } },
   "ghijkl": { long: "http://duckduckgo.com", userID: "demo", views: { unique: 733, total: 984} }
 };
 

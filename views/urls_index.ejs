@@ -12,7 +12,14 @@
       <ul class="list-group">
       <% for (url in urls) { %>
         <li class="list-group-item clearfix">
-        <h4><a href="<%= urls[url].long %>"><%= urls[url].long %></a>  ⟶  <%= url %></h4>
+        <h4><a href="<%= urls[url].long %>"><%= urls[url].long %></a>  ⟶  <%= url %>
+        <button class="copy-button" 
+                 data-clipboard-text="snip.py/u/<%= url %>" 
+                 style="padding: 2px; border-radius: 2px; background-color: #eee;"
+                 data-content="Copied to clipboard!">
+          <img id="clipboard" src="clip.png" style="height: 16px; padding: 0px" />
+        </button>
+        </h4>
           <% if (user.id === urls[url].userID) { %>
             <div class="btn-group pull-right">
               <form class="form-inline" method="POST" action="/urls/<%= url %>/delete?_method=DELETE"> 
@@ -35,5 +42,23 @@
         </div>
       <% } %>
   </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+  <script>
+
+    var clipboard = new Clipboard('.copy-button');
+      clipboard.on('success', function(e) {
+        alert('copied short link to clipboard!')
+      console.info('Action:', e.action);
+      console.info('Text:', e.text);
+      console.info('Trigger:', e.trigger);
+
+      e.clearSelection();
+    });
+
+    clipboard.on('error', function(e) {
+      console.error('Action:', e.action);
+      console.error('Trigger:', e.trigger);
+    });
+  </script>
 </body>
 </html>
